@@ -10,6 +10,7 @@ api-hello-world/
 ├── setup.py
 ├── pytest.ini
 ├── requirements.txt
+├ - - venv/ (à créer soit même)
 └── .github/
     └── workflows/
         └── main.yml
@@ -69,6 +70,7 @@ python_paths = src
 ```txt
 pytest
 Flask
+spyder-kernels==2.5.*
 ```
 
 ## .github/workflows/main.yml
@@ -78,9 +80,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -128,19 +130,20 @@ pip install -e .
 ```
 
 - pip install -e . lie src/hello_world à ton environnement ; toute modification dans le code est immédiatement prise en compte.
+
 - Pour lancer les tests localement dans le (venv) : 
   
   ```cmd
   pytest tests/
   ```
-  
-  
+
+       ou bien il suffit de double cliquer sur `run_all_pytest_tests.bat`.
 
 ---
 
 ## Brancher hello_world à un script externe
 
-Si tu as un script monscript.py dans ~/Downloads qui veut utiliser ton package : ~/Downloads/monscript.py
+Si tu veux utiliser ton package à partir d'un script  externe monscript.py dans ~/Downloads : 
 
 ```python
 from hello_world.greet import say_hello_world
