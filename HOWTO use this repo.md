@@ -34,7 +34,10 @@ def say_hello_world():
 ### tests/test_greet.py
 
 ```python
+from hello_world.greet import say_hello_world
 
+def test_say_hello_world():
+ assert say_hello_world() == "Hello world !"
 ```
 
 ### setup.py
@@ -114,16 +117,24 @@ Ouvre un terminal à la racine du projet (api-hello-world/) et exécute :
 
 ## Créer, activer le virtualenv, mettre à jour pip et installer les dépendances + package en editable
 
+A executer une seule fois au début pour créer le (venv)
+
 ```cmd
 python -m venv venv
-venv/bin/activate
+venv\Scripts\activate
 pip install --upgrade pip
 pip install -r requirements.txt
 pip install -e .
 ```
 
 - pip install -e . lie src/hello_world à ton environnement ; toute modification dans le code est immédiatement prise en compte.
-- Pour lancer les tests localement : pytest tests/
+- Pour lancer les tests localement dans le (venv) : 
+  
+  ```cmd
+  pytest tests/
+  ```
+  
+  
 
 ---
 
