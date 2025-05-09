@@ -33,10 +33,9 @@ def say_hello_world():
 
 ### tests/test_greet.py
 
-from hello_world.greet import say_hello_world
+```python
 
-def test_say_hello_world():
-    assert say_hello_world() == "Hello world !"
+```
 
 ### setup.py
 
@@ -110,8 +109,6 @@ jobs:
 # Initialisation du venv local
 
 L'objectif est de créer un espace virtuel local (venv) qui sera le même entre la phase de développement, de tests avec pytest et de production avec la machine sur AWS. 
-
-
 
 Ouvre un terminal à la racine du projet (api-hello-world/) et exécute :
 
