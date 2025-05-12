@@ -2,7 +2,7 @@
 REM Vérifier que le venv-dev existe
 if not exist "venv-dev\Scripts\activate" (
     echo Virtual environment not found.
-    echo Please create and set up your venv-dev by running these commands:
+    echo Please create and set up your venv by running these commands:
     echo.
     echo     python -m venv venv-dev
     echo     venv-dev\Scripts\activate
@@ -18,6 +18,6 @@ call venv-dev\Scripts\activate
 
 REM Lancer les tests
 echo Running pytest tests...
-pytest tests/ -vv
+pytest tests/test_greet.py::test_say_hello_world -vv
 
 cmd /k
