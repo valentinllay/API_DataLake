@@ -1,0 +1,17 @@
+version: 0.0
+os: linux
+
+files:
+  - source: /
+    destination: /home/ubuntu/API_DataLake/
+
+hooks:
+  ApplicationStop:
+    - location: deployment/ApplicationStop.sh
+      runas: root
+      timeout: 300
+
+  ApplicationStart:
+    - location: deployment/ApplicationStart.sh
+      runas: root
+      timeout: 300
