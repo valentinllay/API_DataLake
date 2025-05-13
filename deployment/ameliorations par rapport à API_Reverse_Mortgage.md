@@ -29,9 +29,6 @@ nohup python app.py > /home/ubuntu/API_DataLake/nohup.log 2>&1 &
 #!/bin/bash
 set -e
 
-# 0) Supprimer tout pour repartir de zero
-rm -rf /home/ubuntu/API_DataLake/
-
 # 1) Installer Python & venv
 apt-get update -y
 apt-get install -y python3.12-venv python3.12-distutils
@@ -82,6 +79,12 @@ pkill -f "python app.py" || true
 
 # 2) Nettoyer l’ancien répertoire
 rm -rf /home/ubuntu/API_DataLake/
+
+# 3) Vider le cache APT
+apt-get clean
+
+# 4) Supprimer tous les logs système
+rm -rf /var/log/*
 ```
 
 **`pkill -f "python app.py"` vs `lsof | kill -9`**
@@ -95,6 +98,8 @@ rm -rf /home/ubuntu/API_DataLake/
   2. `lsof` n’est pas toujours installé par défaut sur toutes les AMI.
 
 - Avec `pkill -f` et `|| true`, tu t’assures que le script ne plante pas si le process a déjà disparu, et tu laisses l’application se terminer avec un **signal TERM** par défaut, un peu plus propre.
+
+- Nettoyage à chaque déploiement avec `apt-get clean` et `rm -rf /var/log/*`
 
 ### User Data (instance EC2)
 
