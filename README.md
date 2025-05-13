@@ -2,34 +2,32 @@
 
 api-hello-world/
 ├── src/
-│ └── hello_world/
-│ ├── **init**.py
-│ └── greet.py
+    ├── hello_world/
+    ├── **init**.py
+    └── greet.py
 ├── tests/
-│ └── test_greet.py
+    └── test_greet.py
 ├── setup.py
-├── pytest.ini
 ├── requirements.txt
-├ - - venv/ (à créer soit même)
-└── .github/
- └── workflows/
- └── main.yml
+├ - - venv-dev/ (à créer soit même)
+├── .github/workflows/
+     └── main.yml
+├── appspecs.yml
+├── deployment/
+    ├── ApplicationStart.sh
+    └── ApplicationStop.sh
+
+
 
 ---
 
 # Contenu des fichiers
 
-### src/hello_world/greet.py
+### hello_world/greet.py
 
 ```python
 def say_hello_world():
  return "Hello world !"
-```
-
-### src/hello_world/**init**.py
-
-```python
-# empty file
 ```
 
 ### tests/test_greet.py
@@ -41,73 +39,19 @@ def test_say_hello_world():
  assert say_hello_world() == "Hello world !"
 ```
 
-### setup.py
+## appspecs.yml
 
-```python
-from setuptools import setup, find_packages
+**Explication courte**
 
-setup(
- name="hello_world",
- version="0.1.0",
- packages=find_packages(where="src"),
- package_dir={"": "src"},
- install_requires=[
- # ajoute ici Flask si besoin, ex. "Flask>=2.2.5"
- ],
-)
-```
+- **files** : copie tout le contenu du ZIP (ton repo) sous `/home/ubuntu/API_DataLake/`.
 
-### pytest.ini
+- **hooks** : arrête à l’ancienne puis démarre ta nouvelle version via tes scripts.
 
-```actionscript
-[pytest]
-testpaths = tests
-python_paths = src
-```
+## .deployment/ApplicationStart.sh
 
-### requirements.txt
+## .deployment/ApplicationStop.sh
 
-```txt
-pytest
-Flask
-spyder-kernels==2.5.*
-```
-
-## .github/workflows/main.yml
-
-```yml
-name: CI
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8]
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install deps
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -e .
-
-      - name: Run pytest
-        run: pytest tests/
-```
+Attention il faut rendre ApplicationStart.sh et APplicationStop executables avant de push dans github en faisant : `chmod +x ApplicationStart.sh ApplicationStop.sh`
 
 ---
 
