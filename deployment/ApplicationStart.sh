@@ -16,4 +16,4 @@ pip install --upgrade pip
 pip install -r requirements-prod.txt
 
 # 3) Lancer l’API en arrière-plan
-nohup python app.py > /home/ubuntu/API_DataLake/nohup.log 2>&1 &
+nohup python app.py > start.out 2> start.err &
