@@ -1,4 +1,2 @@
-Flask
--e .
 pytest
 spyder-kernels==2.5.*
