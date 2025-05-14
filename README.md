@@ -65,7 +65,7 @@ A executer une seule fois au début pour créer le (venv-dev)
 
 ```cmd
 python -m venv venv-dev
-venv\Scripts\activate
+venv-dev\Scripts\activate
 pip install --upgrade pip
 pip install -r requirements-dev.txt
 ```
