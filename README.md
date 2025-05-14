@@ -17,8 +17,6 @@ api-hello-world/
     ├── ApplicationStart.sh
     └── ApplicationStop.sh
 
-
-
 ---
 
 # Contenu des fichiers
