@@ -4,6 +4,6 @@ Attention il faut rendre ApplicationStart.sh et ApplicationStop executables avan
 2. Cliquer sur afficher plus d'options
 3. Cliquer sur "Open Git Bash here"
 3. [NE PAS COPIER COLLER CA NE MARCHERA PAS] Executer :
-chmod +x ApplicationStart.sh ApplicationStop.sh
+chmod +x ApplicationStart.sh ApplicationStop.sh cleanup.sh
 4. Fermer la console
 5. Push dans github.
