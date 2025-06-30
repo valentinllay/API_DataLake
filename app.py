@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request
+import re
 
 from hello_world.greet import say_hello_world, personalized_greeting
-import reversemortgage.report
-# import comparateur.report
+import reversemortgage.report_simplified
+from reversemortgage.report_simplified import InputValidationError
 
 app = Flask(__name__)
 
@@ -36,7 +37,6 @@ def bonjour():
     })
 
 
-
 @app.route("/calculation_simplified", methods=["POST"])
 def calculation_simplified():
     """
@@ -44,13 +44,26 @@ def calculation_simplified():
     Les paramètres sont dans le corps JSON.
     """
     data = request.get_json() or {}
+    print(f"{data = }")
+
+    # Paramètres obligatoires
     for field in ("real_estate_type", "insee_code"):
         if field not in data:
-            return jsonify({"error": f"Le paramètre '{field}' est requis"}), 400
+            return jsonify({"error": f"Le parametre '{field}' est requis"}), 400
 
-    results_simplified: dict = reversemortgage.report.build_report_simplified(inputs_simplified=data)
+    try:
+        results: dict = reversemortgage.report_simplified.build_report(data)
+        print(f"{results = }")
+    except InputValidationError as ive:
+        # Erreur dans les paramètres
+        print(f"Error : {ive}")
+        return jsonify({"error": str(ive)}), 400
+    except Exception as e:
+        # Erreur générale
+        print(f"Exception : {e}")
+        return jsonify({"error": "Erreur interne lors du calcul de LTV"}), 500
 
-    return jsonify(results_simplified)
+    return jsonify(results)
 
 
 
