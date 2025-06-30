@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 
 from hello_world.greet import say_hello_world
-import comparateur.report
+# import comparateur.report
 
 app = Flask(__name__)
 
@@ -15,8 +15,8 @@ def hello():
 #@jwt_required()
 def comparateur_viager():
 
-    result = comparateur.report.build_report(request.get_json())
-
+    # result = comparateur.report.build_report(request.get_json())
+    result = "[ERR] pas implémenté."
     return jsonify({"result": result})
 
 
