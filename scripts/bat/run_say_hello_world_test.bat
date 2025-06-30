@@ -1,4 +1,11 @@
 @echo off
+
+REM Move back one level up to the project root
+cd ..
+REM Move back one level up to the project root
+cd ..
+
+
 REM Vérifier que le venv-dev existe
 if not exist "venv-dev\Scripts\activate" (
     echo Virtual environment not found.
