@@ -14,8 +14,6 @@ Voir les logs en temps réél sur la console au moment du déploiment :
 
 ```shell
 cat /opt/codedeploy-agent/deployment-root/deployment-logs/codedeploy-agent-deployments.log
-
-
 ```
 
 Voir les logs après coup d'un déploiment particulier :
@@ -26,5 +24,3 @@ cd /opt/codedeploy-agent/deployment-root/6c717fd5-7e4c-44d4-a934-88f9cee9e1b2/<I
 
 6c717fd5-7e4c-44d4-a934-88f9cee9e1b2 : c'est l'UUID du Deployment Group (API_DataLake-Prod-DG)
 \<ID-Deployment> : exemple d-0TU402HHA
-
-
