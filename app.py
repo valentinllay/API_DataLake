@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 
 from hello_world.greet import say_hello_world, personalized_greeting
+import reversemortgage.report
 # import comparateur.report
 
 app = Flask(__name__)
@@ -35,6 +36,24 @@ def bonjour():
     })
 
 
+
+@app.route("/calculation_simplified", methods=["POST"])
+def calculation_simplified():
+    """
+    Endpoint bidon pour calcualtion LTV.
+    Les paramètres sont dans le corps JSON.
+    """
+    data = request.get_json() or {}
+    for field in ("real_estate_type", "insee_code"):
+        if field not in data:
+            return jsonify({"error": f"Le paramètre '{field}' est requis"}), 400
+
+    results_simplified: dict = reversemortgage.report.build_report_simplified(inputs_simplified=data)
+
+    return jsonify(results_simplified)
+
+
+
 @app.route('/comparateur_viager', methods=['POST'])
 #@jwt_required()
 def comparateur_viager():
@@ -42,6 +61,7 @@ def comparateur_viager():
     # result = comparateur.report.build_report(request.get_json())
     result = "[ERR] pas implémenté."
     return jsonify({"result": result})
+
 
 
 
