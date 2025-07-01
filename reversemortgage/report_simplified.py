@@ -156,7 +156,7 @@ def validate_inputs(inputs: dict) -> None:
         g2 = str(inputs["gender_2"]).strip().lower()
         if g2 not in ("1", "2", "homme", "femme"):
             raise InputValidationError(
-                f"gender_2 invalide: valeurs autorisees ['1','2','Homme','Femme'], recu '{inputs['gender_2']}'"
+                f"gender_2 invalide: valeurs autorisees '1','2','Homme','Femme', ou laisser vide, recu '{inputs['gender_2']}'"
             )
         try:
             a2 = int(inputs["age_2"])
