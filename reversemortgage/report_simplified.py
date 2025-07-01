@@ -103,44 +103,51 @@ def get_default_inputs_complets():
 
 def validate_inputs(inputs: dict) -> None:
     """
-    Vérifie la cohérence et la validité brute des inputs pour le calcul de LTV simplifié.
-    Lève InputValidationError dès qu’un champ manque ou n’appartient pas aux valeurs autorisées.
-    - real_estate_type : doit être '1','2','Appartement' ou 'Maison'
+    Verifie la coherence et la validite brute des inputs pour le calcul de LTV simplifie.
+    Lève InputValidationError des qu’un champ manque ou n’appartient pas aux valeurs autorisees.
+    - real_estate_type : doit etre '1','2','Appartement' ou 'Maison'
     - insee_code       : 4 ou 5 chiffres
     - gender_1         : '1','2','Homme' ou 'Femme'
     - age_1            : entier entre 60 et 122
-    - gender_2, age_2  : optionnels, mais doivent être tous deux fournis si l’un l’est
-                         valeur brute de gender_2/age_2 soumise aux mêmes règles que 1
+    - gender_2, age_2  : optionnels, mais doivent etre fournis ensemble
     """
-    # 1) présence et non-vide des champs obligatoires
+    # 1) presence et non-vide des champs obligatoires
     for f in ("real_estate_type", "insee_code", "gender_1", "age_1"):
         if f not in inputs or inputs[f] is None or (isinstance(inputs[f], str) and inputs[f].strip() == ""):
-            raise InputValidationError(f"Le parametre '{f}' est requis et ne peut pas etre vide")
+            raise InputValidationError(f"parametre '{f}' requis et non vide")
 
-    # 2) raw real_estate_type
+    # 2) real_estate_type brut
     rt = str(inputs["real_estate_type"]).strip().lower()
     if rt not in ("1", "2", "appartement", "maison"):
-        raise InputValidationError(f"real_estate_type invalide: recu '{inputs['real_estate_type']}'")
+        raise InputValidationError(
+            f"real_estate_type invalide: valeurs autorisees ['1','2','Appartement','Maison'], recu '{inputs['real_estate_type']}'"
+        )
 
-    # 3) raw insee_code
+    # 3) insee_code brut
     ic = str(inputs["insee_code"]).strip()
     if not ic.isdigit() or not (4 <= len(ic) <= 5):
-        raise InputValidationError(f"insee_code invalide: recu '{inputs['insee_code']}'")
+        raise InputValidationError(
+            f"insee_code invalide: doit contenir 4 ou 5 chiffres, recu '{inputs['insee_code']}'"
+        )
 
-    # 4) raw gender_1
+    # 4) gender_1 brut
     g1 = str(inputs["gender_1"]).strip().lower()
     if g1 not in ("1", "2", "homme", "femme"):
-        raise InputValidationError(f"gender_1 invalide: recu '{inputs['gender_1']}'")
+        raise InputValidationError(
+            f"gender_1 invalide: valeurs autorisees ['1','2','Homme','Femme'], recu '{inputs['gender_1']}'"
+        )
 
-    # 5) raw age_1
+    # 5) age_1 brut
     try:
         a1 = int(inputs["age_1"])
     except (TypeError, ValueError):
-        raise InputValidationError("age_1 doit etre un entier")
+        raise InputValidationError("age_1 invalide: doit etre un entier")
     if not (60 <= a1 <= 122):
-        raise InputValidationError(f"age_1 hors limites: recu {a1}")
+        raise InputValidationError(
+            f"age_1 invalide: doit etre compris entre 60 et 122, recu {a1}"
+        )
 
-    # 6) optionnel duo gender_2/age_2
+    # 6) duo optionnel gender_2/age_2
     has_g2 = "gender_2" in inputs and inputs["gender_2"] not in (None, "")
     has_a2 = "age_2"   in inputs and inputs["age_2"]   not in (None, "")
     if has_g2 ^ has_a2:
@@ -148,13 +155,18 @@ def validate_inputs(inputs: dict) -> None:
     if has_g2:
         g2 = str(inputs["gender_2"]).strip().lower()
         if g2 not in ("1", "2", "homme", "femme"):
-            raise InputValidationError(f"gender_2 invalide: recu '{inputs['gender_2']}'")
+            raise InputValidationError(
+                f"gender_2 invalide: valeurs autorisees ['1','2','Homme','Femme'], recu '{inputs['gender_2']}'"
+            )
         try:
             a2 = int(inputs["age_2"])
         except (TypeError, ValueError):
-            raise InputValidationError("age_2 doit etre un entier")
+            raise InputValidationError("age_2 invalide: doit etre un entier")
         if not (60 <= a2 <= 122):
-            raise InputValidationError(f"age_2 hors limites: recu {a2}")
+            raise InputValidationError(
+                f"age_2 invalide: doit etre compris entre 60 et 122, recu {a2}"
+            )
+
 
 
 def normalize_inputs(inputs: dict) -> None:

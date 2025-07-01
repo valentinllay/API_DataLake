@@ -46,11 +46,6 @@ def calculation_simplified():
     data = request.get_json() or {}
     print(f"{data = }")
 
-    # Paramètres obligatoires
-    for field in ("real_estate_type", "insee_code"):
-        if field not in data:
-            return jsonify({"error": f"Le parametre '{field}' est requis"}), 400
-
     try:
         results: dict = reversemortgage.report_simplified.build_report(data)
         print(f"{results = }")
