@@ -1,0 +1,8 @@
+numpy
+pandas
+python-dateutil
+QuantLib-Python
+pytest
+matplotlib
+ipykernel
+spyder-kernels==2.5.*
