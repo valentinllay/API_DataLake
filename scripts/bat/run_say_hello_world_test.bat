@@ -7,7 +7,7 @@ cd ..
 
 
 REM Vérifier que le venv-dev existe
-if not exist "venv-dev\Scripts\activate" (
+if not exist "venv-3.10.8\Scripts\activate" (
     echo Virtual environment not found.
     echo Please create and set up your venv by running these commands:
     echo.
@@ -21,7 +21,7 @@ if not exist "venv-dev\Scripts\activate" (
 )
 
 REM Activer le venv
-call venv-dev\Scripts\activate
+call venv-3.10.8\Scripts\activate
 
 REM Lancer les tests
 echo Running pytest tests...

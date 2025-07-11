@@ -8,7 +8,7 @@ security.py
 """
 
 from functools import wraps
-from flask import request, abort, g
+from flask import request, g
 from config import config
 import logging
 

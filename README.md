@@ -1,21 +1,6 @@
 ## Structure du dépôt
 
-api-hello-world/
-├── src/
-    ├── hello_world/
-    ├── **init**.py
-    └── greet.py
-├── tests/
-    └── test_greet.py
-├── setup.py
-├── requirements.txt
-├ - - venv-dev/ (à créer soit même)
-├── .github/workflows/
-     └── main.yml
-├── appspecs.yml
-├── deployment/
-    ├── ApplicationStart.sh
-    └── ApplicationStop.sh
+A REFAIRE
 
 ---
 

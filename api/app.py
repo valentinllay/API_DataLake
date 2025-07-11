@@ -8,12 +8,12 @@ app.py
 """
 
 import logging
-from flask import Flask, jsonify, request, abort, g, Response
+from flask import Flask, jsonify, request, g, Response
 
 from config import config
-from api.services import get_generic_greeting, get_personalized_greeting, get_latest_ltv
-from api.validators import validate_greeting_payload, validate_ltv_request_data
-from api.security import require_api_key
+from services import get_generic_greeting, get_personalized_greeting, get_latest_ltv
+from validators import validate_greeting_payload, validate_ltv_request_data
+from security import require_api_key
 from errors.exceptions import InputValidationError, AuthenticationError, NotFoundError, DatabaseError
 import reversemortgage.report_simplified
 

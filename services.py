@@ -9,7 +9,7 @@ Logique métier de l’API : composition d’appels repository,
 transformation des résultats en structures Python.
 """
 
-from api.repository import fetch_latest_calcul_ltv
+from repository import fetch_latest_calcul_ltv
 from errors.exceptions import NotFoundError
 from hello_world.greet import say_hello_world, personalized_greeting
 
