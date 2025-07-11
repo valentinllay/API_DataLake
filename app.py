@@ -1,19 +1,48 @@
-from flask import Flask, jsonify, request
-import re
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 11 11:01:52 2025
 
-from hello_world.greet import say_hello_world, personalized_greeting
+@author: ValentinLeLay
+
+app.py
+"""
+
+import logging
+from flask import Flask, jsonify, request, abort, g, Response
+
+from config import config
+from api.services import get_generic_greeting, get_personalized_greeting, get_latest_ltv
+from api.validators import validate_greeting_payload, validate_ltv_request_data
+from api.security import require_api_key
+from errors.exceptions import InputValidationError, AuthenticationError, NotFoundError, DatabaseError
 import reversemortgage.report_simplified
-from reversemortgage.report_simplified import InputValidationError
+
+
+logging.basicConfig(level=config.LOG_LEVEL)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
+app.config['DEBUG'] = config.DEBUG
+app.config['TESTING'] = config.TESTING
+
 
 @app.route("/hello_world", methods=["GET"])
-def hello():
+def hello_world():
     """
-    Endpoint pour salutation générique.
+    Endpoint GET pour salutation générique.
     """
-    message = say_hello_world()
-    return jsonify({"message": message})
+    result: str = get_generic_greeting()
+    return jsonify({"result": result}), 200
+
+
+@app.route("/hello_world_secured", methods=["GET"])
+@require_api_key
+def hello_world_secured():
+    """
+    Endpoint pour salutation générique sécursié par clé API.
+    """
+    result: str = get_generic_greeting()
+    return jsonify({"result": result}), 200
 
 
 @app.route("/bonjour", methods=["POST"])
@@ -22,44 +51,23 @@ def bonjour():
     Endpoint pour salutation personnalisée via POST.
     Récupère les paramètres dans le corps JSON.
     """
-    data = request.get_json() or {}
-    genre = data.get("genre")
-    prenom = data.get("prenom")
-    nom = data.get("nom")
+    data: dict = request.get_json() or {}
+    validated = validate_greeting_payload(data)
+    result: str = get_personalized_greeting(**validated)
 
-    message = personalized_greeting(genre, prenom, nom)
-
-    return jsonify({
-        "message": message,
-        "genre": genre,
-        "prenom": prenom,
-        "nom": nom
-    })
+    return jsonify({"result": result}), 200
 
 
 @app.route("/calculation_simplified", methods=["POST"])
-def calculation_simplified():
+def calculation_simplified() -> tuple[Response, int]:
     """
     Endpoint bidon pour calcualtion LTV.
     Les paramètres sont dans le corps JSON.
     """
-    data = request.get_json() or {}
-    print(f"{data = }")
-
-    try:
-        results: dict = reversemortgage.report_simplified.build_report(data)
-        print(f"{results = }")
-    except InputValidationError as ive:
-        # Erreur dans les paramètres
-        print(f"Error : {ive}")
-        return jsonify({"error": str(ive)}), 400
-    except Exception as e:
-        # Erreur générale
-        print(f"Exception : {e}")
-        return jsonify({"error": "Erreur interne lors du calcul de LTV"}), 500
-
-    return jsonify(results)
-
+    data = request.get_json()
+    raise_if_force_error(data)
+    results: dict = reversemortgage.report_simplified.build_report(data)
+    return jsonify({"result": results}), 200
 
 
 @app.route('/comparateur_viager', methods=['POST'])
@@ -68,12 +76,76 @@ def comparateur_viager():
 
     # result = comparateur.report.build_report(request.get_json())
     result = "[ERR] pas implémenté."
-    return jsonify({"result": result})
+    return jsonify({"result": result}), 200
 
 
+@app.route("/calculs_ltv/latest", methods=["POST"])
+def latest_calcul_ltv():
+    data = request.get_json()
+    insee_code, age, borrower = validate_ltv_request_data(data)
+    result = get_latest_ltv(insee_code, age, borrower)
+    return jsonify({"result": result}), 200
 
+
+# Les handlers d’exception “métier”
+@app.errorhandler(InputValidationError)
+def handle_bad_input(e):
+    return jsonify({'status':'error','error': str(e)}), 400
+
+@app.errorhandler(AuthenticationError)
+def handle_auth_error(e):
+    return jsonify({'status': 'error', 'error': str(e)}), 401
+
+@app.errorhandler(NotFoundError)
+def handle_not_found(e):
+    return jsonify({'status':'error','error': str(e)}), 404
+
+@app.errorhandler(DatabaseError)
+def handle_bad_database(e):
+    return jsonify({'status':'error','error': str(e)}), 404
+
+# Les handlers de codes HTTP bruts
+@app.errorhandler(400)
+def handle_400(e):
+    return jsonify({'status': 'error', 'error': str(e)}), 400
+
+@app.errorhandler(404)
+def handle_404(e):
+    return jsonify({'status': 'error', 'error': str(e)}), 404
+
+@app.errorhandler(500)
+def handle_500(e):
+    return jsonify({'status': 'error', 'error': 'Internal server error'}), 500
+
+
+@app.after_request
+def clear_user(response):
+    """
+    Réinitialise g.user après chaque requête
+    pour éviter toute fuite de contexte entre appels.
+    """
+    g.user = None
+    return response
+
+# Utils
+def raise_if_force_error(data: dict) -> None:
+    """
+    Vérifie le champ `force_error` dans le JSON et, si activé,
+    lève une RuntimeError pour déclencher le debugger interactif de Flask.
+
+    Args:
+        data (dict): Données extraites de `request.get_json()`.
+
+    Raises:
+        RuntimeError: si `force_error` (insensible à la casse) vaut
+        "1", "yes" ou "true".
+    """
+    # Si on passe ?force_error=1, on lève volontairement
+    force_error = str(data.get("force_error", "")).lower()
+    if force_error in ("1", "yes", "true"):
+        raise RuntimeError("Test volontaire du debugger")
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=config.DEBUG)
 

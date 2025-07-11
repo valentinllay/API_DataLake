@@ -7,12 +7,12 @@ Created on Tue Jul  1 10:19:54 2025
 
 # test_validate_inputs.py
 
-from reversemortgage.report_simplified import validate_inputs
+from reversemortgage.report_simplified import validate_and_normalize_inputs
 from reversemortgage.report_simplified import InputValidationError
 
 def run_test(name, inp, should_pass):
     try:
-        validate_inputs(inp.copy())
+        validate_and_normalize_inputs(inp.copy())
         passed = True
     except InputValidationError as e:
         passed = False
@@ -180,6 +180,97 @@ def main():
             "gender_1": "Homme",
             "age_1": 60
         }, False),
+
+        ("Valid one borrower", {
+            "real_estate_type": 1,
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": 60,
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
+        ("Valid age_1 as comma-string", {
+            "real_estate_type": 1,
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": "60,5",
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
+        ("Valid age_1 as point-string", {
+            "real_estate_type": 1,
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": "60.5",
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
+        ("Valid age_1 as float", {
+            "real_estate_type": 1,
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": 60.5,
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
+        ("Valid two borrowers", {
+            "real_estate_type": "2",
+            "insee_code": "01234",
+            "gender_1": "Femme",
+            "age_1": "65",
+            "gender_2": "Homme",
+            "age_2": "70"
+        }, True),
+
+        ("Valid two borrowers with age_2 comma", {
+            "real_estate_type": "2",
+            "insee_code": "01234",
+            "gender_1": "Femme",
+            "age_1": "65",
+            "gender_2": "Homme",
+            "age_2": "70,5"
+        }, True),
+
+        ("Valid two borrowers with age_2 point", {
+            "real_estate_type": "2",
+            "insee_code": "01234",
+            "gender_1": "Femme",
+            "age_1": "65",
+            "gender_2": "Homme",
+            "age_2": "70.5"
+        }, True),
+
+        ("Valid two borrowers with age_2 float", {
+            "real_estate_type": "2",
+            "insee_code": "01234",
+            "gender_1": "Femme",
+            "age_1": "65",
+            "gender_2": "Homme",
+            "age_2": 70.5
+        }, True),
+
+        ("Valid type 'appartement'", {
+            "real_estate_type": "appartement",
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": 60,
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
+        ("Valid type 'maison'", {
+            "real_estate_type": "Maison",
+            "insee_code": "1234",
+            "gender_1": "Homme",
+            "age_1": 60,
+            "gender_2": "",
+            "age_2": ""
+        }, True),
+
     ]
 
     for name, inp, should_pass in tests:
