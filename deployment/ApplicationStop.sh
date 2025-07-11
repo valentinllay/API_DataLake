@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-# 1) Tuer l’API 
-pkill -f "python -m api.app" || true
+# 1) Tuer l’API (Tuer tous les workers Gunicorn)
+pkill -f "gunicorn: master" || true
 
 # 2) Nettoyer l’ancien répertoire
 rm -rf /home/ubuntu/API_DataLake/
