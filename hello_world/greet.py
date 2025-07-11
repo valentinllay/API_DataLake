@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 11 11:01:52 2025
+
+@author: ValentinLeLay
+"""
+
 def say_hello_world():
  """
  Renvoie le texte de salutation.

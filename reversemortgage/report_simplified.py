@@ -1,14 +1,14 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 11 11:01:52 2025
+
+@author: ValentinLeLay
+"""
+
 import datetime
 
 import reversemortgage.report
-
-
-class InputValidationError(Exception):
-    """
-    Erreur levée quand les inputs sont invalides.
-    Sert à distinguer une erreur lié à l'intput user d'une erreur interne de calcul de LTV.
-    """
-    pass
+from errors.exceptions import InputValidationError
 
 
 def get_todays_date_iso() -> str:
