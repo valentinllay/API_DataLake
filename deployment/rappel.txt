@@ -6,4 +6,6 @@ Attention il faut rendre ApplicationStart.sh et ApplicationStop executables avan
 3. [NE PAS COPIER COLLER CA NE MARCHERA PAS] Executer :
 chmod +x ApplicationStart.sh ApplicationStop.sh cleanup.sh
 4. Fermer la console
+6. Pour vérifier : ouvrir un terminal à la racine du projet et faire : git ls-files --stage *.sh
+   Il faut voir "100755" devant chaque script .sh sinon c'est pas bon.
 5. Push dans github.
