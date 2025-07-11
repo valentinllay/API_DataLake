@@ -14,4 +14,4 @@ python -m pip install --upgrade pip
 pip install -r requirements-prod.txt
 
 # 3) Lancer l’API, logs séparés (standard outputs et erreurs)
-nohup python app.py > start.out 2> start.err &
+nohup python -m api.app > start.out 2> start.err &

@@ -44,7 +44,7 @@ class Config:
     DB_HOST: str = 'datalake-rds.cleg662om8fw.eu-west-3.rds.amazonaws.com'
     DB_PORT: int = 3306
     DB_NAME: str = 'ltv_computation'
-    SSL_CA_PATH: str = os.path.join(PROJECT_ROOT, "api", "resources", "SSL CA file", "eu-west-3-bundle.pem")
+    SSL_CA_PATH: str = os.path.join(PROJECT_ROOT, "resources", "SSL CA file", "eu-west-3-bundle.pem")
 
     # URI SQLAlchemy Core
     SQLALCHEMY_DATABASE_URI: str = (
