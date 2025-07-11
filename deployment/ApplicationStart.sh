@@ -13,5 +13,10 @@ python3.12 -m venv env
 python -m pip install --upgrade pip
 pip install -r requirements-prod.txt
 
-# 3) Lancer l’API, logs séparés (standard outputs et erreurs)
-nohup python -m api.app > start.out 2> start.err &
+# 3) Lancer l’API, logs séparés : appels HTTP (access.log), infos (gunicorn.out), erreurs critiques (gunicorn.err)
+nohup env/bin/gunicorn \
+  -w 4 -k gthread \
+  -b 0.0.0.0:5000 \
+  api.app:app \
+  --access-logfile access.log \
+  > gunicorn.out 2> gunicorn.err &
