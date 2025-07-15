@@ -42,7 +42,7 @@ class Config:
     DB_PASSWORD: str = 'PCbN6ySghm6DaJFX6zN7oFXQosEfy4a99SHknSRY'
     DB_HOST: str = 'datalake-rds.cleg662om8fw.eu-west-3.rds.amazonaws.com'
     DB_PORT: int = 3306
-    DB_NAME: str = 'ltv_computation'
+    DB_NAME: str = 'reverse_mortgage_simulations'
     SSL_CA_PATH: str = os.path.join(PROJECT_ROOT, "resources", "SSL_CA_file", "eu-west-3-bundle.pem")
 
     # URI SQLAlchemy Core
@@ -66,7 +66,6 @@ class DevelopmentConfig(Config):
       - Identifiants et hôte pointant vers la DB de dev
     """
     DEBUG: bool = True
-    DB_NAME: str = 'ltv_computation'
 
 
 class TestingConfig(Config):

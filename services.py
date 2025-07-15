@@ -9,7 +9,7 @@ Logique métier de l’API : composition d’appels repository,
 transformation des résultats en structures Python.
 """
 
-from repository import fetch_latest_calcul_ltv
+from repository import fetch_maximum_quotity
 from errors.exceptions import NotFoundError
 from hello_world.greet import say_hello_world, personalized_greeting
 
@@ -28,12 +28,30 @@ def get_personalized_greeting(genre: str | None, prenom: str | None, nom: str | 
     return personalized_greeting(genre, prenom, nom)
 
 
-def get_latest_ltv(insee_code: str, age: int, borrower: str) -> dict | None:
+def get_maximum_quotity(
+    age_1: int,
+    gender_1: int,
+    age_2: int | None,
+    gender_2: int | None,
+    borrower_type: str,
+    insee_code: str,
+    real_estate_type: str,
+) -> float:
     """
-    Renvoie un dict représentant la dernière entrée de LTV,
-    ou None si aucun résultat n’a été trouvé.
+    Ordonne la récupération de maximum_quotity et gère l'absence de résultat.
+
+    Raises:
+        NotFoundError: si aucun enregistrement ne correspond aux filtres.
     """
-    row = fetch_latest_calcul_ltv(insee_code, age, borrower)
-    if row is None:
-        raise NotFoundError(f"Aucun calcul LTV trouvé pour insee_code={insee_code}, age={age}, borrower={borrower}")
-    return dict(row)
+    mq = fetch_maximum_quotity(
+        age_1, gender_1, borrower_type,
+        insee_code, real_estate_type,
+        age_2, gender_2
+    )
+    if mq is None:
+        raise NotFoundError(
+            f"Aucun maximum_quotity pour insee_code={insee_code}, "
+            f"borrower_type={borrower_type}, ages=({age_1},{age_2}), "
+            f"genders=({gender_1},{gender_2}), real_estate_type={real_estate_type}"
+        )
+    return mq
