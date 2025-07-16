@@ -6,3 +6,4 @@ python-dateutil
 QuantLib-Python
 sqlalchemy
 requests
+pymysql
