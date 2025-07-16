@@ -2,10 +2,11 @@ Attention il faut rendre ApplicationStart.sh et ApplicationStop executables avan
 
 1. Clique droit n'importe où dans le folder deployment/
 2. Cliquer sur afficher plus d'options
-3. Cliquer sur "Open Git Bash here"
-3. [NE PAS COPIER COLLER CA NE MARCHERA PAS] Executer :
-chmod +x ApplicationStart.sh ApplicationStop.sh cleanup.sh
-4. Fermer la console
-6. Pour vérifier : ouvrir un terminal à la racine du projet et faire : git ls-files --stage *.sh
-   Il faut voir "100755" devant chaque script .sh sinon c'est pas bon.
-5. Push dans github.
+3. Cliquer sur "Ouvrir dans le Terminal"
+4. Vérifier qu'on lit bien : C:\Users\ValentinLeLay\OneDrive - FIMPACT\Documents\GitHub\API_DataLake\deployment>
+5. Executer à la suite :
+git update-index --chmod=+x BeforeInstall.sh
+git ls-files --stage *.sh
+git diff --cached --name-status    # vous devriez voir A/B/A M mode change sur BeforeInstall.sh
+git commit -m "mark BeforeInstall.sh as executable"
+git push
