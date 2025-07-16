@@ -40,8 +40,8 @@ def validate_maximum_quotity_payload(data: dict) -> dict[str, int | str | None]:
         et éventuellement age_2, gender_2.
     """
     # Champs requis
-    required_str = ["borrower_type", "insee_code", "real_estate_type"]
-    required_int = ["age_1", "gender_1"]
+    required_str = ["borrower_type", "insee_code"]
+    required_int = ["age_1", "gender_1", "real_estate_type"]
     optional_int = ["age_2", "gender_2"]
 
     # Vérification présence et type
