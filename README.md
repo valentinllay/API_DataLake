@@ -1,6 +1,52 @@
 ## Structure du dépôt
 
-A REFAIRE
+API_DataLake/
+│
+├── config.py                  # Configuration centrale (LOG_LEVEL, formats…)
+├── db.py                      # Factory create_db_engine()
+├── repository.py              # Fonctions SQL brutes
+├── services.py                # Orchestration & logique métier
+├── validators.py              # Validation des payloads
+├── security.py                # Décorateurs d’authentification
+├── errors/                    # Exceptions métiers et handlers
+│   └── exceptions.py
+│
+├── api/                       # Couche HTTP
+│   └── app.py                 # Flask app, routes, errorhandlers, hooks
+│
+├── comparateur/               # Package métier “comparateur”
+│   └── report.py
+│
+├── hello_world/               # Package métier “hello_world”
+│   └── greetings.py
+│
+├── reversemortgage/           # Package métier “reverse mortgage”
+│   └── report_simplified.py
+│
+├── viager/                    # Package métier “viager”
+│   └── calculator.py
+│
+├── scripts/                   # Scripts divers
+│   ├── python/                
+│   │   └── benchmark.py
+│   └── bat/                   
+│       └── run_benchmark.bat
+│
+├── deployment/                # Scripts de déploiement
+│   ├── ApplicationStart.sh
+│   ├── ApplicationStop.sh
+│   └── check_modes.bat
+│
+├── tests/                     # Tests pytest
+│   ├── api/
+│   ├── comparateur/
+│   ├── hello_world/
+│   ├── reversemortgage/
+│   └── viager/
+│
+├── requirements-dev.txt
+├── requirements-prod.txt
+└── README.md
 
 ---
 
@@ -34,7 +80,7 @@ def test_say_hello_world():
 
 ## .deployment/ApplicationStop.sh
 
-Attention il faut rendre ApplicationStart.sh et APplicationStop executables avant de push dans github en faisant : `chmod +x ApplicationStart.sh ApplicationStop.sh`
+Attention il faut rendre ApplicationStart.sh et ApplicationStop executables avant de push dans github en faisant : `chmod +x ApplicationStart.sh ApplicationStop.sh`
 
 ---
 

@@ -11,8 +11,8 @@ import logging
 from flask import Flask, jsonify, request, g, Response
 
 from config import config
-from services import get_generic_greeting, get_personalized_greeting, get_latest_ltv
-from validators import validate_greeting_payload, validate_ltv_request_data
+from validators import validate_maximum_quotity_payload, validate_greeting_payload
+from services import get_maximum_quotity, get_generic_greeting, get_personalized_greeting
 from security import require_api_key
 from errors.exceptions import InputValidationError, AuthenticationError, NotFoundError, DatabaseError
 import reversemortgage.report_simplified
@@ -24,6 +24,18 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['DEBUG'] = config.DEBUG
 app.config['TESTING'] = config.TESTING
+
+### ENDPOINTS ###
+# TODO : faire une /v2 avec un champs "field" pour récupérer autre chose que max quo de façon paramétrique.
+@app.route("/v1/maximum_quotity", methods=["POST"])
+def calculs_ltv_maximum_quotity():
+    """
+    Expose la quotité maximale selon les filtres donnés.
+    """
+    data = request.get_json() or {}
+    payload = validate_maximum_quotity_payload(data)
+    mq = get_maximum_quotity(**payload)
+    return jsonify({"result": mq}), 200
 
 
 @app.route("/hello_world", methods=["GET"])
@@ -54,10 +66,10 @@ def bonjour():
     data: dict = request.get_json() or {}
     validated = validate_greeting_payload(data)
     result: str = get_personalized_greeting(**validated)
-
     return jsonify({"result": result}), 200
 
 
+# TODO : ajouter "/v1"
 @app.route("/calculation_simplified", methods=["POST"])
 def calculation_simplified() -> tuple[Response, int]:
     """
@@ -79,14 +91,7 @@ def comparateur_viager():
     return jsonify({"result": result}), 200
 
 
-@app.route("/calculs_ltv/latest", methods=["POST"])
-def latest_calcul_ltv():
-    data = request.get_json()
-    insee_code, age, borrower = validate_ltv_request_data(data)
-    result = get_latest_ltv(insee_code, age, borrower)
-    return jsonify({"result": result}), 200
-
-
+### HANDLERS D'ERREUR ###
 # Les handlers d’exception “métier”
 @app.errorhandler(InputValidationError)
 def handle_bad_input(e):
@@ -118,6 +123,7 @@ def handle_500(e):
     return jsonify({'status': 'error', 'error': 'Internal server error'}), 500
 
 
+### UTILS ###
 @app.after_request
 def clear_user(response):
     """
@@ -127,7 +133,6 @@ def clear_user(response):
     g.user = None
     return response
 
-# Utils
 def raise_if_force_error(data: dict) -> None:
     """
     Vérifie le champ `force_error` dans le JSON et, si activé,
