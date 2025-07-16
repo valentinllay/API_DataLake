@@ -7,7 +7,7 @@ files:
 
 hooks:
   BeforeInstall:
-    - location: deployment/prepare.sh
+    - location: deployment/BeforeInstall.sh
       runas: root
       timeout: 300
 
