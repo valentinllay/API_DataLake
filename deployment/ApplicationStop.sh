@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # 1) Tuer brutalement l’API
-pkill -9 -f "gunicorn" || true
+pkill -f "python -m api.app" || true
 
 # Libérer le port 5000
 fuser -k 5000/tcp || true

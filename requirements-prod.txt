@@ -5,5 +5,4 @@ pandas
 python-dateutil
 QuantLib-Python
 sqlalchemy
-gunicorn
 requests
