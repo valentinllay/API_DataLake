@@ -6,6 +6,11 @@ files:
     destination: /home/ubuntu/API_DataLake/
 
 hooks:
+  BeforeInstall:
+    - location: deployment/prepare.sh
+      runas: root
+      timeout: 300
+
   ApplicationStop:
     - location: deployment/ApplicationStop.sh
       runas: root

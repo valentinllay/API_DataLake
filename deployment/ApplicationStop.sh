@@ -1,14 +1,12 @@
 #!/bin/bash
-set -e
+# « fail fast » robuste
+set -euo pipefail
 
-# 1) Tuer l’API (Tuer tous les workers Gunicorn)
-pkill -f "gunicorn: master" || true
+# 1) Tuer brutalement l’API
+pkill -9 -f "gunicorn" || true
 
-# 2) Nettoyer l’ancien répertoire
-rm -rf /home/ubuntu/API_DataLake/
+# Libérer le port 5000
+fuser -k 5000/tcp || true
 
-# 3) Vider le cache APT
-apt-get clean
-
-# 4) Supprimer tous les logs système
-rm -rf /var/log/*
+# Le script renvoie 0 (succès) à la fin
+exit 0 
