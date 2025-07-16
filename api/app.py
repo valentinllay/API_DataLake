@@ -118,6 +118,10 @@ def handle_400(e):
 def handle_404(e):
     return jsonify({'status': 'error', 'error': str(e)}), 404
 
+@app.errorhandler(405)
+def handle_405(e):
+    return jsonify({'status':'error','error':'Method Not Allowed'}), 405
+
 @app.errorhandler(500)
 def handle_500(e):
     return jsonify({'status': 'error', 'error': 'Internal server error'}), 500
