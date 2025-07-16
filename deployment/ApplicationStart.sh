@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 # 1) Installer Python & venv
 apt-get update -y
@@ -14,4 +14,7 @@ python -m pip install --upgrade pip
 pip install -r requirements-prod.txt
 
 # 3) Lancer l’API, logs séparés (standard outputs et erreurs)
-nohup python -m api.app > start.out 2> start.err
+nohup python -m api.app > start.out 2> start.err &
+
+# 4) toujours renvoyer 0 (succès) à la fin du script
+exit 0
