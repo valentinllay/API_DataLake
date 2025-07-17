@@ -10,6 +10,25 @@ validators.py
 from errors.exceptions import InputValidationError
 
 
+def validate_insee_code(raw_code: str | int) -> str:
+    """
+    Valide et normalise un code INSEE en chaîne de 5 chiffres.
+
+    Args:
+        raw_code: code INSEE initial, sous forme d'entier ou de chaîne.
+    Returns:
+        Le code INSEE formaté sur 5 chiffres (avec un zéro en tête si nécessaire).
+    Raises:
+        InputValidationError: si le résultat n'est pas une chaîne de 5 chiffres.
+    """
+    code_str = str(raw_code).zfill(5)
+    if not (code_str.isdigit() and len(code_str) == 5):
+        raise InputValidationError(
+            f"Le code INSEE doit être un entier de 5 chiffres, reçu : {raw_code}"
+        )
+    return code_str
+
+
 def validate_greeting_payload(data: dict) -> dict[str, str | None]:
     """
     Vérifie la présence et le type (str ou None) des clés 'genre', 'prenom', 'nom' dans le JSON.
@@ -68,6 +87,9 @@ def validate_maximum_quotity_payload(data: dict) -> dict[str, int | str | None]:
                 raise InputValidationError(f"'{field}' doit être convertible en entier ou absent, reçu : {val!r}")
         else:
             data[field] = None
+
+    # Normalisation du code INSEE
+    data["insee_code"] = validate_insee_code(data["insee_code"])
 
     return {
         "age_1": data["age_1"],
