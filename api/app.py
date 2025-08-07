@@ -9,11 +9,14 @@ app.py
 
 import logging
 from flask import Flask, jsonify, request, g, Response
+from flask_limiter.errors import RateLimitExceeded
 
 from config import config
 from validators import validate_maximum_quotity_payload, validate_greeting_payload
 from services import get_maximum_quotity, get_generic_greeting, get_personalized_greeting
-from security import require_api_key
+from api.authentification import require_api_key
+from api.rate_limit import init_rate_limit, limiter
+from api.request_logger import log_request_to_db
 from errors.exceptions import InputValidationError, AuthenticationError, NotFoundError, DatabaseError
 import reversemortgage.report_simplified
 
@@ -24,10 +27,13 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 app.config['DEBUG'] = config.DEBUG
 app.config['TESTING'] = config.TESTING
+init_rate_limit(app)
+app.after_request(log_request_to_db)
 
 ### ENDPOINTS ###
 # TODO : faire une /v2 avec un champs "field" pour récupérer autre chose que max quo de façon paramétrique.
 @app.route("/v1/maximum_quotity", methods=["POST"])
+@limiter.limit("720 per minute") # 720 per minute = 30 appels Excels par minute
 def calculs_ltv_maximum_quotity():
     """
     Expose la quotité maximale selon les filtres donnés.
@@ -121,6 +127,11 @@ def handle_404(e):
 @app.errorhandler(405)
 def handle_405(e):
     return jsonify({'status':'error','error':'Method Not Allowed'}), 405
+
+@app.errorhandler(RateLimitExceeded)
+def handle_rate_limit(e):
+    return jsonify({'status':'error','error': f'Too many requests. Limit {e.description}.'}), 429
+
 
 @app.errorhandler(500)
 def handle_500(e):
