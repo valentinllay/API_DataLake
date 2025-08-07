@@ -14,9 +14,12 @@ contient la logique métier
 """
 
 from sqlalchemy import text
-from sqlalchemy.engine import Row
+from sqlalchemy.engine import RowMapping, Engine
+from errors.exceptions import NotFoundError
+from config import config
 from db import create_db_engine
 
+_engine: Engine = create_db_engine()
 
 def fetch_maximum_quotity(
     age_1: int,
@@ -31,18 +34,23 @@ def fetch_maximum_quotity(
     Récupère la maximum_quotity pour les filtres donnés,
     en prenant d’abord la date de calcul la plus récente,
     puis l'enregistrement au plus grand id si plusieurs sur la même date.
+
+    Raises:
+        NotFoundError si aucune simulation n'existe pour ces inputs dans le DataLake.
     """
-    engine = create_db_engine()
+    engine = _engine
     with engine.connect() as conn:
-        sql = """
+        # On récupère le nom de la table finale depuis la config
+        table_name = config.TABLE_CALCULS_LTV_POUR_GRILLE
+        sql = f"""
         SELECT maximum_quotity
-        FROM calculs_ltv_pour_grille_outil_excel
-        WHERE insee_code       = :insee_code
-          AND borrower_type    = :borrower_type
-          AND real_estate_type = :real_estate_type
-          AND age_1            = :age_1
-          AND gender_1         = :gender_1
-        """
+        FROM {table_name}
+            WHERE insee_code       = :insee_code
+                AND borrower_type    = :borrower_type
+                AND real_estate_type = :real_estate_type
+                AND age_1            = :age_1
+                AND gender_1         = :gender_1
+         """
         params: dict[str, object] = {
             "insee_code": insee_code,
             "borrower_type": borrower_type,
@@ -67,5 +75,14 @@ def fetch_maximum_quotity(
 
         query = text(sql)
         result = conn.execute(query, params).mappings()
-        row = result.fetchone()
-        return row["maximum_quotity"] if row else None
+        row: RowMapping | None = result.fetchone()
+
+        if row is None:
+            raise NotFoundError(
+                f"Aucune simulation pour insee_code={insee_code}, "
+                f"borrower_type={borrower_type}, ages=({age_1},{age_2}), "
+                f"genders=({gender_1},{gender_2}), real_estate_type={real_estate_type}"
+            )
+
+        mq: float | None = row["maximum_quotity"]
+        return mq

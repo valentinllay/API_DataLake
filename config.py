@@ -37,20 +37,22 @@ class Config:
     LOG_LEVEL = logging.DEBUG if DEBUG else logging.INFO
     TESTING: bool = False
 
-    # Informations de connexion (en clair)
+    # Informations de connexion
     DB_USER: str = 'python_script'
     DB_PASSWORD: str = 'PCbN6ySghm6DaJFX6zN7oFXQosEfy4a99SHknSRY'
     DB_HOST: str = 'datalake-rds.cleg662om8fw.eu-west-3.rds.amazonaws.com'
     DB_PORT: int = 3306
     DB_NAME: str = 'reverse_mortgage_simulations'
     SSL_CA_PATH: str = os.path.join(PROJECT_ROOT, "resources", "SSL_CA_file", "eu-west-3-bundle.pem")
-
-    # URI SQLAlchemy Core
     SQLALCHEMY_DATABASE_URI: str = (
         f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
     )
     SQLALCHEMY_PRE_PING = True
 
+    # Table de la Base de Données 'reverse_mortgage_simulations'
+    TABLE_CALCULS_LTV_POUR_GRILLE: str = "calculs_ltv_pour_grille_outil_excel"
+
+    # API Keys
     VALID_API_KEYS: dict[str] = {
         "Fb6yymHYdG7b7JhKJ9skHC4BMQTGgGiBmEfMo8A6": "CFCAL_user",
         "yhbBgzNycs5aY8rxdam3BAimGqMzi5XbMroNsbdL":  "ARRAGO_user"
@@ -91,7 +93,6 @@ class ProductionConfig(Config):
 # Choix possible : ProductionConfig(), TestingConfig(), DevelopmentConfig()
 config = ProductionConfig()
 
-
 if __name__ == "__main__":
     # Test rapide de la configuration
     print("=== Vérification de la configuration ===")
@@ -102,5 +103,4 @@ if __name__ == "__main__":
     print(f"DB_URI        : {config.SQLALCHEMY_DATABASE_URI}")
     print(f"SSL_CA_PATH   : {config.SSL_CA_PATH}")
     print("Fichier SSL existe ?", os.path.isfile(config.SSL_CA_PATH))
-    print(f"Engine opts   : {config.SQLALCHEMY_ENGINE_OPTIONS}")
     print("========================================")

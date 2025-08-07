@@ -10,7 +10,6 @@ transformation des résultats en structures Python.
 """
 
 from repository import fetch_maximum_quotity
-from errors.exceptions import NotFoundError
 from hello_world.greet import say_hello_world, personalized_greeting
 
 
@@ -39,19 +38,15 @@ def get_maximum_quotity(
 ) -> float:
     """
     Ordonne la récupération de maximum_quotity et gère l'absence de résultat.
-
-    Raises:
-        NotFoundError: si aucun enregistrement ne correspond aux filtres.
+    Si la simulation existe et que maximum_quotity est Null alors c'est inéligible donc
+    la LTV doit-être de zéro.
     """
-    mq = fetch_maximum_quotity(
+    mq: float|None = fetch_maximum_quotity(
         age_1, gender_1, borrower_type,
         insee_code, real_estate_type,
         age_2, gender_2
     )
+    # Inéligbilité
     if mq is None:
-        raise NotFoundError(
-            f"Aucun maximum_quotity pour insee_code={insee_code}, "
-            f"borrower_type={borrower_type}, ages=({age_1},{age_2}), "
-            f"genders=({gender_1},{gender_2}), real_estate_type={real_estate_type}"
-        )
+        mq = 0.0
     return mq

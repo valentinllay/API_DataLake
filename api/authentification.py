@@ -7,11 +7,11 @@ Created on Fri Jul 11 11:01:52 2025
 security.py
 """
 
+import logging
 from functools import wraps
 from flask import request, g
-from config import config
-import logging
 
+from config import config
 from errors.exceptions import AuthenticationError
 
 logger = logging.getLogger(__name__)
